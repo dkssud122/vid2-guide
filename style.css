@@ -343,7 +343,7 @@ p {
 }
 
 .hint-image img {
-    max-height: 45vh;
+    max-height: 40vh;
     max-width: 90%;
     width: auto;
     border-radius: 10px;
