@@ -71,7 +71,7 @@ const screenDurations = [
     6000,   // 4버튼 자물쇠
     7000,   // 금고
     5000,   // 도어락
-    0       // 완료 (수동)
+    5000    // 완료 (5초 후 자동 이동)
 ];
 
 let currentGuideIndex = 0;
@@ -200,12 +200,16 @@ function showGuideScreen() {
     }
 
     // 다음 화면으로 자동 전환
-    if (duration > 0 && currentGuideIndex < guideScreens.length - 1) {
+    if (duration > 0) {
         pausedStartTime = Date.now();
         pausedTimeRemaining = duration;
         guideTimer = setTimeout(() => {
-            currentGuideIndex++;
-            showGuideScreen();
+            if (currentGuideIndex >= guideScreens.length - 1) {
+                goToForm();
+            } else {
+                currentGuideIndex++;
+                showGuideScreen();
+            }
         }, duration);
     }
 }

@@ -12,10 +12,9 @@
         <!-- 첫 번째 화면: 방문 여부 질문 -->
         <div class="screen active" id="screen-intro">
             <div class="content">
-                <h1>큐브 이스케이프 수유점에<br>방문해보신적 있나요?</h1>
-                <div class="buttons">
-                    <button class="btn" onclick="goToForm()">O<span>설명 스킵</span></button>
-                    <button class="btn" onclick="startGuide()">X<span>설명 보기</span></button>
+                <h1>큐브이스케이프 수유점<br>주의사항 및 각종 안내 사항</h1>
+                <div class="buttons" style="margin-top: 40px;">
+                    <button class="btn" onclick="startGuide()">보기</button>
                 </div>
             </div>
         </div>
@@ -337,10 +336,10 @@
             <div class="content guide-content">
                 <div class="guide-step lock-step">방향 자물쇠</div>
                 <div class="lock-image"><img src="lock-direction.png" alt="방향 자물쇠"></div>
-                <p class="guide-text" style="margin-top: 10px;"><strong class="highlight-red">초기화 방법</strong> : 은색 고리를 <strong>3번</strong> 눌러주세요</p>
-                <p class="guide-desc"><strong class="highlight-red">⚠ 튕기면 안돼요!</strong></p>
-                <h2>상하좌우 방향을 순서대로 입력!</h2>
-                <p class="guide-text">자물쇠를 <strong class="highlight-purple">아래로 당기면</strong> 열려요</p>
+                <h2>초기화 → 방향 입력 → 당기기</h2>
+                <p class="guide-text" style="margin-top: 15px;"><strong class="highlight-red">초기화</strong> : 은색 고리를 <strong>3번</strong> 눌러주세요 <strong class="highlight-red">⚠ 튕기면 안돼요!</strong></p>
+                <p class="guide-text"><strong>방향 입력</strong> : 상하좌우 방향을 순서대로 입력</p>
+                <p class="guide-text"><strong class="highlight-purple">당기기</strong> : 자물쇠를 아래로 당기면 열려요</p>
                 <div class="progress-bar"><div class="progress"></div></div>
             </div>
         </div>
