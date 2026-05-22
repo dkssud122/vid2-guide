@@ -175,6 +175,13 @@ function showGuideScreen() {
     const currentScreen = document.getElementById(screenId);
     currentScreen.classList.add('active');
 
+    // 화면 안에 video가 있으면 처음부터 재생 (iOS Safari autoplay 우회)
+    const video = currentScreen.querySelector('video');
+    if (video) {
+        try { video.currentTime = 0; } catch (e) {}
+        video.play().catch(() => {});
+    }
+
     // 탭 업데이트
     updateTabs(screenId);
 
