@@ -273,37 +273,6 @@ function stopGuide() {
     }
 }
 
-// 클릭으로 화면 전환 (가이드 중일 때)
-// 왼쪽 터치: 이전, 오른쪽 터치: 다음
-document.addEventListener('click', function(e) {
-    if (e.target.closest('.btn')) return;
-    if (e.target.closest('.section-tab')) return;
-
-    const activeScreen = document.querySelector('.screen.active');
-    if (activeScreen && guideScreens.includes(activeScreen.id)) {
-        stopGuide();
-        isPaused = false;
-
-        // 화면 너비의 절반 기준으로 왼쪽/오른쪽 판단
-        const screenWidth = window.innerWidth;
-        const clickX = e.clientX;
-
-        if (clickX < screenWidth / 2) {
-            // 왼쪽 터치: 이전 화면
-            if (currentGuideIndex > 0) {
-                currentGuideIndex--;
-                showGuideScreen();
-            }
-        } else {
-            // 오른쪽 터치: 다음 화면
-            if (currentGuideIndex < guideScreens.length - 1) {
-                currentGuideIndex++;
-                showGuideScreen();
-            }
-        }
-    }
-});
-
 // 키보드 단축키
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
