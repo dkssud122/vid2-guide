@@ -685,3 +685,72 @@ p {
         max-width: 160px;
     }
 }
+
+/* 하단 이전/다음 버튼 */
+.screen {
+    padding-bottom: 110px;
+}
+
+.guide-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 110px;
+    padding: 0 40px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+}
+
+.guide-nav.visible {
+    display: flex;
+}
+
+.nav-btn {
+    min-width: 180px;
+    padding: 18px 36px;
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    background: #333;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.nav-btn:active {
+    transform: scale(0.97);
+}
+
+.nav-btn:disabled {
+    visibility: hidden;
+}
+
+.nav-btn.final {
+    background: #2D5A4A;
+}
+
+.nav-count {
+    font-size: 1.3rem;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .screen {
+        padding-bottom: 80px;
+    }
+    .guide-nav {
+        height: 80px;
+        padding: 0 16px;
+    }
+    .nav-btn {
+        min-width: 120px;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+    }
+}

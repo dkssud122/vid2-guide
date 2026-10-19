@@ -37,50 +37,8 @@ const guideScreens = [
     'guide-end'         // 완료
 ];
 
-// 각 화면 표시 시간 (ms)
-const screenDurations = [
-    3000,   // 필독 타이틀
-    5000,   // 전자기기
-    6000,   // 폐쇄공포증
-    6000,   // 동의서
-    5000,   // 환불
-    3000,   // 주의사항 타이틀
-    5000,   // 반입금지
-    5000,   // 힘으로 X
-    5000,   // 천장/벽
-    4000,   // 폐쇄공포증
-    6000,   // 힌트
-    5000,   // 보안유지
-    5000,   // 인터폰
-    4000,   // CCTV
-    5000,   // 진행률
-    5000,   // 자물쇠
-    3000,   // 힌트시스템 타이틀
-    6000,   // 힌트폰 화면 소개
-    6000,   // QR Code 버튼
-    6000,   // QR 스캔
-    6000,   // 메시지 보내기
-    6000,   // 추가 힌트
-    6000,   // 추가 힌트 화면
-    6000,   // 바탕화면
-    6000,   // 그림판
-    6000,   // 로그인 넘버
-    3000,   // 자물쇠 안내 타이틀
-    7000,   // 방향 자물쇠
-    10000,  // 방향 자물쇠 영상
-    6000,   // 숫자 자물쇠
-    6000,   // 마스터 자물쇠
-    6000,   // 4버튼 자물쇠
-    7000,   // 금고
-    5000,   // 도어락
-    5000    // 완료 (5초 후 자동 이동)
-];
-
+// 화면은 자동으로 넘어가지 않고, 손님이 '다음' / '이전' 버튼으로 직접 넘김
 let currentGuideIndex = 0;
-let guideTimer = null;
-let isPaused = false;
-let pausedTimeRemaining = 0;
-let pausedStartTime = 0;
 
 // 섹션 탭 정보
 const sectionTabs = [
@@ -117,8 +75,6 @@ function createTabs(screenId) {
 function goToSection(screenId) {
     const index = guideScreens.indexOf(screenId);
     if (index !== -1) {
-        stopGuide();
-        isPaused = false;
         currentGuideIndex = index;
         showGuideScreen();
     }
@@ -146,13 +102,12 @@ function goToForm() {
 
 // 화면 전환 함수
 function goToScreen(screenId) {
-    stopGuide();
-
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
 
     document.getElementById(screenId).classList.add('active');
+    document.getElementById('guide-nav').classList.remove('visible');
 }
 
 // 가이드 시작
@@ -161,10 +116,40 @@ function startGuide() {
     showGuideScreen();
 }
 
+// 다음 화면 (마지막 화면에서는 서약서로 이동)
+function nextScreen() {
+    if (currentGuideIndex >= guideScreens.length - 1) {
+        goToForm();
+    } else {
+        currentGuideIndex++;
+        showGuideScreen();
+    }
+}
+
+// 이전 화면
+function prevScreen() {
+    if (currentGuideIndex > 0) {
+        currentGuideIndex--;
+        showGuideScreen();
+    }
+}
+
+// 하단 이전/다음 버튼 상태 업데이트
+function updateNav() {
+    const isLast = currentGuideIndex === guideScreens.length - 1;
+    document.getElementById('guide-nav').classList.add('visible');
+    document.getElementById('nav-prev').disabled = currentGuideIndex === 0;
+    document.getElementById('nav-count').textContent = `${currentGuideIndex + 1} / ${guideScreens.length}`;
+    const nextBtn = document.getElementById('nav-next');
+    nextBtn.innerHTML = isLast
+        ? '서약서 작성하기 <i class="fa-solid fa-pen"></i>'
+        : '다음 <i class="fa-solid fa-chevron-right"></i>';
+    nextBtn.classList.toggle('final', isLast);
+}
+
 // 가이드 화면 표시
 function showGuideScreen() {
     const screenId = guideScreens[currentGuideIndex];
-    const duration = screenDurations[currentGuideIndex];
 
     // 모든 화면 비활성화
     document.querySelectorAll('.screen').forEach(screen => {
@@ -185,12 +170,9 @@ function showGuideScreen() {
     // 탭 업데이트
     updateTabs(screenId);
 
-    // 프로그레스 바 업데이트
+    // 프로그레스 바: 전체 중 몇 번째 화면인지 표시
     const progressBar = currentScreen.querySelector('.progress');
-    if (progressBar && duration > 0) {
-        progressBar.style.width = '0%';
-        progressBar.style.transition = 'none';
-
+    if (progressBar) {
         // 섹션별 프로그레스 바 색상
         if (screenId.startsWith('notice')) {
             progressBar.style.background = '#D4A853';  // 주의사항: 머스타드
@@ -201,76 +183,10 @@ function showGuideScreen() {
         } else {
             progressBar.style.background = '#2D5A4A';  // 필독: 딥그린
         }
-
-        setTimeout(() => {
-            progressBar.style.transition = `width ${duration}ms linear`;
-            progressBar.style.width = '100%';
-        }, 50);
+        progressBar.style.width = `${(currentGuideIndex + 1) / guideScreens.length * 100}%`;
     }
 
-    // 다음 화면으로 자동 전환
-    if (duration > 0) {
-        pausedStartTime = Date.now();
-        pausedTimeRemaining = duration;
-        guideTimer = setTimeout(() => {
-            if (currentGuideIndex >= guideScreens.length - 1) {
-                goToForm();
-            } else {
-                currentGuideIndex++;
-                showGuideScreen();
-            }
-        }, duration);
-    }
-}
-
-// 일시정지
-function pauseGuide() {
-    if (guideTimer) {
-        clearTimeout(guideTimer);
-        guideTimer = null;
-        pausedTimeRemaining = pausedTimeRemaining - (Date.now() - pausedStartTime);
-        isPaused = true;
-
-        // 프로그레스 바 일시정지
-        const activeScreen = document.querySelector('.screen.active');
-        const progressBar = activeScreen?.querySelector('.progress');
-        if (progressBar) {
-            const computedWidth = getComputedStyle(progressBar).width;
-            progressBar.style.transition = 'none';
-            progressBar.style.width = computedWidth;
-        }
-    }
-}
-
-// 재개
-function resumeGuide() {
-    if (isPaused && pausedTimeRemaining > 0) {
-        isPaused = false;
-        pausedStartTime = Date.now();
-
-        // 프로그레스 바 재개
-        const activeScreen = document.querySelector('.screen.active');
-        const progressBar = activeScreen?.querySelector('.progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.transition = `width ${pausedTimeRemaining}ms linear`;
-                progressBar.style.width = '100%';
-            }, 50);
-        }
-
-        guideTimer = setTimeout(() => {
-            currentGuideIndex++;
-            showGuideScreen();
-        }, pausedTimeRemaining);
-    }
-}
-
-// 가이드 중지
-function stopGuide() {
-    if (guideTimer) {
-        clearTimeout(guideTimer);
-        guideTimer = null;
-    }
+    updateNav();
 }
 
 // 키보드 단축키
@@ -278,38 +194,12 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         goToScreen('screen-intro');
     }
-    // 스페이스바: 일시정지/재개 토글
-    if (e.key === ' ') {
-        e.preventDefault();
-        const activeScreen = document.querySelector('.screen.active');
-        if (activeScreen && guideScreens.includes(activeScreen.id)) {
-            if (isPaused) {
-                resumeGuide();
-            } else {
-                pauseGuide();
-            }
-        }
-    }
+    const activeScreen = document.querySelector('.screen.active');
+    if (!activeScreen || !guideScreens.includes(activeScreen.id)) return;
     if (e.key === 'ArrowRight') {
-        const activeScreen = document.querySelector('.screen.active');
-        if (activeScreen && guideScreens.includes(activeScreen.id)) {
-            stopGuide();
-            isPaused = false;
-            if (currentGuideIndex < guideScreens.length - 1) {
-                currentGuideIndex++;
-                showGuideScreen();
-            }
-        }
+        nextScreen();
     }
     if (e.key === 'ArrowLeft') {
-        const activeScreen = document.querySelector('.screen.active');
-        if (activeScreen && guideScreens.includes(activeScreen.id)) {
-            stopGuide();
-            isPaused = false;
-            if (currentGuideIndex > 0) {
-                currentGuideIndex--;
-                showGuideScreen();
-            }
-        }
+        prevScreen();
     }
 });
