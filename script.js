@@ -16,6 +16,7 @@ const guideScreens = [
     'notice-8',         // CCTV
     'notice-9',         // 진행률
     'notice-10',        // 직원용 자물쇠
+    'notice-11',        // 폴라로이드 찾기 이벤트
     'hint-title',       // 힌트시스템 타이틀
     'hint-1',           // 힌트폰 화면 소개
     'hint-2',           // QR Code 버튼
