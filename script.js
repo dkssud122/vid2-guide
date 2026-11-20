@@ -5,6 +5,14 @@ const guideScreens = [
     'guide-2',          // 폐쇄공포증/임산부
     'guide-3',          // 개인정보 동의서
     'guide-4',          // 중도포기 환불불가
+    'theme-title',      // 테마 소개 타이틀
+    'theme-1',
+    'theme-2',
+    'theme-3',
+    'theme-4',
+    'theme-5',
+    'theme-6',
+    'theme-7',
     'notice-title',     // 주의사항 타이틀
     'notice-1',         // 반입금지
     'notice-2',         // 힘으로 X
@@ -43,6 +51,7 @@ let currentGuideIndex = 0;
 
 // 섹션 탭 정보
 const sectionTabs = [
+    { name: '테마 소개', start: 'theme-title', prefix: 'theme' },
     { name: '주의사항', start: 'notice-title', prefix: 'notice' },
     { name: '힌트시스템', start: 'hint-title', prefix: 'hint' },
     { name: '자물쇠 안내', start: 'lock-title', prefix: 'lock' }
@@ -50,6 +59,7 @@ const sectionTabs = [
 
 // 현재 섹션 확인
 function getCurrentSection(screenId) {
+    if (screenId.startsWith('theme')) return 'theme';
     if (screenId.startsWith('notice')) return 'notice';
     if (screenId.startsWith('hint')) return 'hint';
     if (screenId.startsWith('lock')) return 'lock';
@@ -175,7 +185,9 @@ function showGuideScreen() {
     const progressBar = currentScreen.querySelector('.progress');
     if (progressBar) {
         // 섹션별 프로그레스 바 색상
-        if (screenId.startsWith('notice')) {
+        if (screenId.startsWith('theme')) {
+            progressBar.style.background = '#C9A13B';  // 테마 소개: 골드
+        } else if (screenId.startsWith('notice')) {
             progressBar.style.background = '#D4A853';  // 주의사항: 머스타드
         } else if (screenId.startsWith('hint')) {
             progressBar.style.background = '#3366FF';  // 힌트시스템: 파란색

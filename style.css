@@ -758,3 +758,8 @@ p {
 /* 이벤트 안내 그림 (폴라로이드 찾기 등) */
 .event-image { margin: 10px auto 0; text-align: center; }
 .event-image img { max-width: 92vw; max-height: 68vh; width: auto; height: auto; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+
+/* 테마 소개 (2026-11-20) */
+.theme-color { color: #C9A13B; }
+.theme-image { margin: 46px auto 0; text-align: center; }
+.theme-image img { max-width: 94vw; max-height: 72vh; width: auto; height: auto; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
